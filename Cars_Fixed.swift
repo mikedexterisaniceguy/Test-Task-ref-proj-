@@ -24,90 +24,109 @@ enum CarType {
 }
 
 final class Car {
+    var type: CarType
     private let title: String
-    private var type: CarType
+    
+    var getTitle: String {
+        title
+    }
     
     init(title: String, type: CarType) {
         self.title = title
         self.type = type
     }
     
-    func getTitle() -> String {
-        title
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
 
 final class Rental {
-    private let car : Car
+    let car : Car
     private let daysRented: Int
+    
+    var getDaysRented: Int {
+        daysRented
+    }
+    
+    var getCar: Car {
+        car
+    }
     
     init(car: Car, daysRented: Int) {
         self.car = car
         self.daysRented = daysRented
     }
-    func getDaysRented() -> Int {
-        daysRented
-    }
-    func getCar() ->  Car {
-        car
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
 final class Customer {
     private let name: String
-    private var rentals = [Rental]()
+    private var rentals: [Rental] = []
     
-    init(name: String) {
+    var customerName: String {
+        name
+    }
+    
+    init(
+        name: String,
+        rentals: [Rental] = [Rental]()
+    ) {
         self.name = name
     }
     
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension Customer {
     func addRental(arg: Rental) {
         rentals.append(arg)
     }
-    func getName() -> String {
-        name;
-    }
     
     func billingStatement() -> String {
-        
-        var totalAmount: Double = 0
+        var totalAmount = 0
         var frequentRenterPoints = 0
+        var result = "Rental Record for " + customerName + "\n"
         
-        var iterator = rentals.makeIterator()
-        var result = "Rental Record for " + getName() + "\n"
-        
-        while (true) {
-            if let each = iterator.next() {
-                var thisAmount: Double = 0
-                
-                //determine amounts for each line
-                switch each {
-                case .economy:
-                    thisAmount += 80
-                    if (each.getDaysRented() > 2) {
-                        thisAmount += (Double(each.getDaysRented()) - 2) * 30.0
-                    }
-                case .supercar:
-                    thisAmount += Double(each.getDaysRented()) * 200.0
-                case .muscle:
-                    thisAmount += 200
-                    if (each.getDaysRented() > 3) {
-                        thisAmount += (Double(each.getDaysRented()) - 3) * 50.0
-                    }
-                default:
-                    break
+        rentals.map { each in
+            var thisAmount = 0
+            
+            //determine amounts for each line
+            switch each.car.type {
+            case .economy:
+                thisAmount += 80
+                if (each.getDaysRented > 2) {
+                    thisAmount += (each.getDaysRented - 2) * 30
                 }
-                // add frequent renter points
-                frequentRenterPoints += 1
-                // add bonus for a two day new release rental
-                if ((each == .supercar) && each.getDaysRented() > 1) { frequentRenterPoints += 1 }
-                //show figures for this rental
-                result += "\t" + each.getCar().getTitle() + "\t" + String(thisAmount) + "\n"
-                totalAmount += thisAmount
-            } else {
-                break
+            case .supercar:
+                thisAmount += each.getDaysRented * 200
+            case .muscle:
+                thisAmount += 200
+                if (each.getDaysRented > 3) {
+                    thisAmount += (each.getDaysRented - 3) * 50
+                }
             }
+            
+            // add frequent renter points
+            frequentRenterPoints += 1
+            
+            // add bonus for a two day new release rental
+            if each.car.type == .supercar && each.getDaysRented > 1 {
+                frequentRenterPoints += 1
+            }
+            
+            //show figures for this rental
+            result += "\t\(each.getCar.getTitle) \t\(String(thisAmount))\n"
+            totalAmount += thisAmount
         }
         //add footer lines
         result += "Final rental payment owed " + String(totalAmount) + "\n"
@@ -126,3 +145,4 @@ customer.addRental(arg: rental2)
 
 
 print(customer.billingStatement())
+
