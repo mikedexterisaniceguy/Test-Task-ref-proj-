@@ -2,7 +2,7 @@
 //  WeatherAlertAppApp.swift
 //  WeatherAlertApp
 //
-//  Created by 123 on 11.01.24.
+//  Created by Kiryl Maksimau on 11.01.24.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ import SwiftUI
 struct WeatherAlertAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WeatherAlertView()
         }
     }
 }

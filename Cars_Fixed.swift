@@ -23,7 +23,7 @@ enum CarType {
     case supercar
 }
 
-final class Car {
+struct Car {
     var type: CarType
     private let title: String
     
@@ -43,7 +43,7 @@ final class Car {
 }
 
 
-final class Rental {
+struct Rental {
     let car : Car
     private let daysRented: Int
     
@@ -66,7 +66,7 @@ final class Rental {
     }
 }
 
-final class Customer {
+struct Customer {
     private let name: String
     private var rentals: [Rental] = []
     
