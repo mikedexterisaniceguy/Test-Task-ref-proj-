@@ -12,7 +12,7 @@ final class NetworkService {
     
     static let shared = NetworkService()
     
-    private init() {}
+    init() {}
 }
 
 // MARK: - NetworkServiceInterface implementation
